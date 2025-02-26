@@ -1,0 +1,4 @@
+*.zip filter=lfs diff=lfs merge=lfs -text
+*.rds filter=lfs diff=lfs merge=lfs -text
+supplementary/*.zip filter=lfs diff=lfs merge=lfs -text
+supplementary/*.rds filter=lfs diff=lfs merge=lfs -text
