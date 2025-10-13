@@ -12,8 +12,13 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
       print('Important! This function assumes your CpG IDs/IlmnIDs are in the first column of input file, and the input file contains columns named GENCODEv47_Transcript_ID and/or GENCODEv47_Transcript_Name.')
     }
     if (by=='db') {
-      print('Returning CpGs with annotated regulatory elements (based on distance from genes).')
+      print('Returning CpGs annotated to regulatory elements (based on distance from genes).')
       print('Important! This function assumes your CpG IDs/IlmnIDs are in the first column of input file, and the input file contains columns named DB_Element_Gene_ID and/or DB_Element_Gene_Name')
+    }
+    if (by=='gh') {
+      print('Returning CpGs annotated to regulatory elements (according to GeneHancer database).')
+      print('Important! This function assumes your CpG IDs/IlmnIDs are in the first column of input file, and the input file contains columns named In_GeneHancer and/or GeneHancer_Associated_Gene.')
+      print('If you are using the publicly available version of the manifest, you will only have column In_GeneHancer, due to GeneHancer T&Cs.')
     }
     print('Set verbose = FALSE to silence this message.')
   }
@@ -119,6 +124,60 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
     mgenes <- left_join(mgenes, temp[,-1], by='temp')
     mgenes <- mgenes[,which(colnames(mgenes) != 'temp')]
     return(mgenes)
+  }
+  if (by=='gh') {
+    gh_cols <- colnames(manifest)[grepl('GeneHancer',colnames(manifest))]
+    ig <- 'In_GeneHancer' %in% gh_cols
+    gname <- 'GeneHancer_Associated_Gene' %in% gh_cols
+    ghname <- 'GeneHancer_Name' %in% gh_cols
+    etype  <- 'GeneHancer_Feature_Type' %in% gh_cols
+
+    if(!ig & !gname) {
+      stop('Columns In_GeneHancer and GeneHancer_Associated_Gene not found in input file.')
+    }
+      
+    if(ig & !gname & !ghname & !etype) {
+      colorder <- c(1,which(colnames(manifest)=='In_GeneHancer'),(2:ncol(manifest))[-(which(colnames(manifest)=='In_GeneHancer')-1)])
+      return(manifest[,..colorder])
+    } else {
+      temp <- tidyr::separate_longer_delim(manifest,
+                                       cols=all_of(gh_cols),
+                                       delim=';')
+      if (gname & ghname) {
+        temp$temp <- paste0(temp[,1], temp$GeneHancer_Associated_Gene, temp$GeneHancer_Name)
+        temp <- temp[!duplicated(temp$temp),]
+        if (etype) {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'GeneHancer_Feature_Type', 'GeneHancer_Name', 'temp')]
+          colnames(mgh)[2:4] <- c('Gene','Element','GeneHancer_Element_Name')
+        } else {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'GeneHancer_Name', 'temp')]
+          colnames(mgh)[2:3] <- c('Gene','GeneHancer_Element_Name')
+        }
+      } else if (gname & !ghname) {
+        temp$temp <- paste0(temp[,1], temp$GeneHancer_Associated_Gene)
+        temp <- temp[!duplicated(temp$temp),]
+        if (etype) {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'GeneHancer_Feature_Type', 'temp')]
+          colnames(mgh)[2:3] <- c('Gene','Element')
+        } else {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'temp')]
+          colnames(mgh)[2] <- 'Gene'
+        }
+      } else if (ghname & !gname) {
+        temp$temp <- paste0(temp[,1], temp$GeneHancer_Name)
+        temp <- temp[!duplicated(temp$temp),]
+        if (etype) {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Name', 'GeneHancer_Feature_Type', 'temp')]
+          colnames(mgh)[2:3] <- c('GeneHancer_Element_Name','Element')
+        } else {
+          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Name', 'temp')]
+          colnames(mgh)[2] <- 'GeneHancer_Element_Name'
+        }
+      }
+      mgh <- left_join(mgh, temp[,-1], by='temp')
+      mgh <- mgh[,which(colnames(mgh) != 'temp')]
+      return(mgh)
+    }
   }
   
 }
