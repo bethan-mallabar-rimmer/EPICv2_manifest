@@ -1,7 +1,7 @@
 require(tidyr)
 require(dplyr)
 
-condense_annotation <- function(manifest, by='gene', verbose=TRUE) {
+expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   if (verbose) {
     if (by=='gene') {
       print('Returning CpGs with annotated GENCODEv47 genes.')
