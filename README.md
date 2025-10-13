@@ -1,13 +1,24 @@
 # Functions to help access annotations from the re-annotated EPICv2 manifest
 Re-annotated manifest available here: https://zenodo.org/records/15181885
 
-### load function:
+### load functions:
 ```
 library(devtools)
 source_url('https://raw.githubusercontent.com/bethan-mallabar-rimmer/EPICv2_manifest/main/functions.R')
 ```
 
-### get one row per CpG/GENCODEv47 gene annotation:
+### Using the function - contents of this page:
+- Expanding the annotation
+  - Get one row per CpG/GENCODEv47 gene annotation
+  - Get one row per CpG/GENCODEv47 transcript annotation
+  - Get one row per CpG/distance-based promoter and enhancer annotation
+- Pathway analysis - get a list of annotated genes etc
+  - Sub Item 1
+  - Sub Item 2
+
+
+## Expanding the annotation
+### Get one row per CpG/GENCODEv47 gene annotation:
 ```
 gene_annotations <- expand_annotation(manifest, by='gene')
 
@@ -51,11 +62,16 @@ head(regulatory_annotations[,1:5]
 #6 cg25595446_BC11                 cg25595446    65640459
 ```
 
-### Pathway analysis - get a list of genes with significant CpGs in the gene body, or <1500bp upstream of the TSS:
+## Pathway analysis
+E.g. if you have a list of significant sites and want to a list of which genes or transcripts they are annotated to:
 ```
 my_significant_cpgs <- c('cg25383568_TC11','cg25595446_BC11','cg25908985_BC11','cg25459778_BC11') #...etc.
-
-sig_gene_annotations <- gene_annotations[gene_annotations[,1] %in% my_significant_cpgs,]
+```
+### Get a list of genes with significant CpGs in the gene body:
+```
+gene_annotations <- expand_annotation(manifest, by='gene')
+sig_genebody_annotations <- gene_annotations[gene_annotations[,1] %in% my_significant_cpgs,]
+sig_genebody_annotations <- sig_genebody_annotations[grepl('intron|exon|UTR',sig_genebody_annotations$GENCODEv47_Feature_Type),]
 
 #Get gene list:
 unique(sig_gene_annotations$Gene)
@@ -66,6 +82,10 @@ table(sig_gene_annotations$Gene)
 #output: ACTN4 ENSG00000298338    CRAMP1       PRMT1      IHH
 #          1          1              1           1         1
 ```
+### Get a list of genes with significant CpGs <1500bp upstream of the TSS:
+
+### Get a list of genes with significant CpGs <200bp upstream of the TSS:
+
 ### Get a list of transcripts with significant CpGs in them:
 ```
 sig_transcript_annotations <- transcript_annotations[transcript_annotations[,1] %in% my_significant_cpgs,]
