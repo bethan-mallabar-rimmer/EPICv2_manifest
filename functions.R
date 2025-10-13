@@ -122,3 +122,147 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   }
   
 }
+
+filter_to_genebody <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named GENCODEv47_Feature_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('intron|exon|UTR',temp$GENCODEv47_Feature_Type),]
+  } else {
+    temp <- expanded_annotation[grepl('intron|exon|UTR',expanded_annotation$GENCODEv47_Feature_Type),]
+  }
+  return(temp)
+}
+
+filter_to_TSS1500 <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named GENCODEv47_Feature_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('TSS1500',temp$GENCODEv47_Feature_Type),]
+  } else {
+    temp <- expanded_annotation[grepl('TSS1500',expanded_annotation$GENCODEv47_Feature_Type),]
+  }
+  return(temp)
+}
+
+filter_to_TSS200 <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named GENCODEv47_Feature_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('TSS200',temp$GENCODEv47_Feature_Type),]
+  } else {
+    temp <- expanded_annotation[grepl('TSS200',expanded_annotation$GENCODEv47_Feature_Type),]
+  }
+  return(temp)
+}
+
+filter_to_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named DB_Element_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$DB_Element_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='db' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('Promoter',temp$DB_Element_Type,ignore.case=TRUE),]
+  } else {
+    temp <- expanded_annotation[grepl('Promoter',expanded_annotation$DB_Element_Type,ignore.case=TRUE),]
+  }
+  return(temp)
+}
+
+filter_to_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named DB_Element_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$DB_Element_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='db' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('Enhancer',temp$DB_Element_Type,ignore.case=TRUE),]
+  } else {
+    temp <- expanded_annotation[grepl('Enhancer',expanded_annotation$DB_Element_Type,ignore.case=TRUE),]
+  }
+  return(temp)
+}
+
+filter_to_gh_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('GeneHancer_Feature_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named GeneHancer_Feature_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$GeneHancer_Feature_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='gh' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('Promoter',temp$GeneHancer_Feature_Type,ignore.case=TRUE),]
+  } else {
+    temp <- expanded_annotation[grepl('Promoter',expanded_annotation$GeneHancer_Feature_Type,ignore.case=TRUE),]
+  }
+  return(temp)
+}
+
+filter_to_gh_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
+  if (!('GeneHancer_Feature_Type' %in% colnames(expanded_annotation))) {
+    stop('Column named GeneHancer_Feature_Type missing from input file.')
+  }
+  if (sum(grepl(';', expanded_annotation$GeneHancer_Feature_Type)) > 0) {
+    stop("Did you apply the function expand_annotation() with by='gh' to your input file before running this function?")
+  }
+  if (!is.null(sig_cpgs)) {
+    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
+    temp <- temp[grepl('Enhancer',temp$GeneHancer_Feature_Type,ignore.case=TRUE),]
+  } else {
+    temp <- expanded_annotation[grepl('Enhancer',expanded_annotation$GeneHancer_Feature_Type,ignore.case=TRUE),]
+  }
+  return(temp)
+}
+
+get_annotated_gene_list < function (expanded_annotation, na.rm=FALSE) {
+  if (na.rm) {
+    return(unique(expanded_annotation$Gene[!is.na(expanded_annotation$Gene) & expanded_annotation$Gene != ""]))
+  } else {
+    return(unique(expanded_annotation$Gene))
+  }
+}
+
+get_annotated_gene_table < function (expanded_annotation, na.rm=FALSE) {
+  if (na.rm) {
+    return(table(expanded_annotation$Gene[!is.na(expanded_annotation$Gene) & expanded_annotation$Gene != ""]))
+  } else {
+    return(table(expanded_annotation$Gene))
+  }
+}
+
+get_annotated_transcript_list < function (expanded_annotation, na.rm=FALSE) {
+  if (na.rm) {
+    return(unique(expanded_annotation$Transcript[!is.na(expanded_annotation$Transcript) & expanded_annotation$Transcript != ""]))
+  } else {
+    return(unique(expanded_annotation$Transcript))
+  }
+}
+
+get_annotated_transcript_table < function (expanded_annotation, na.rm=FALSE) {
+  if (na.rm) {
+    return(table(expanded_annotation$Transcript[!is.na(expanded_annotation$Transcript) & expanded_annotation$Transcript != ""]))
+  } else {
+    return(table(expanded_annotation$Transcript))
+  }
+}
