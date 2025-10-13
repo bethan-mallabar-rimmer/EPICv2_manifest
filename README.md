@@ -35,24 +35,32 @@ head(transcript_annotations[,1:4]
 #6 cg25383568_TC11       ACTN4-203 cg25383568    79792482
 ```
 
-### Pathway analysis - get a list of genes (or transcripts) with significant CpGs in them
+### Pathway analysis - get a list of genes with significant CpGs in them:
 ```
 my_significant_cpgs <- c('cg25383568_TC11','cg25595446_BC11','cg25908985_BC11') #...etc.
+
 sig_gene_annotations <- gene_annotations[gene_annotations[,1] %in% my_significant_cpgs,]
+
+#Get gene list:
 unique(sig_gene_annotations$Gene)
 #output: "ACTN4" "ENSG00000298338" "PRMT1" "IHH"
 
-#get number of significant CpGs per gene
+#Get number of significant CpGs per gene:
 table(sig_gene_annotations$Gene)
 #output: ACTN4 ENSG00000298338             IHH           PRMT1
 #          1          1                     1               1
-
-#similar for transcripts
+```
+### Get a list of transcripts with significant CpGs in them:
+```
 sig_transcript_annotations <- transcript_annotations[transcript_annotations[,1] %in% my_significant_cpgs,]
+
+#Get transcript list:
 unique(sig_transcript_annotations$Transcript)
 #output: "ACTN4-201"       "ACTN4-202"       "ACTN4-203"       "ACTN4-204"       "ACTN4-211"      
 #"ENST00000754980" "ENST00000754981" "ENST00000754982" "PRMT1-201"       "PRMT1-202"      
 #"PRMT1-217"       "PRMT1-221"       "IHH-201"
+
+#Get number of significant CpGs per transcript:
 table(sig_transcript_annotations$Transcript)
 #you get the idea
 
