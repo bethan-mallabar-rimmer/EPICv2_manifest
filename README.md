@@ -1,7 +1,7 @@
 # EPICv2_manifest
 Functions to help access annotations from the re-annotated EPICv2 manifest: https://zenodo.org/records/15181885
 
-### load function
+### load function:
 ```
 library(devtools)
 source_url('https://raw.githubusercontent.com/bethan-mallabar-rimmer/EPICv2_manifest/main/functions.R')
