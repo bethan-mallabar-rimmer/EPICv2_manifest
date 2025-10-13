@@ -156,28 +156,30 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
                            GeneHancer_Element_Name = temp$GeneHancer_Name, temp = temp$temp)
           colnames(mgh)[1] <- colnames(temp)[1]
         } else {
-          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'GeneHancer_Name', 'temp')]
-          colnames(mgh)[2:3] <- c('Gene','GeneHancer_Element_Name')
+          mgh <- data.frame(CpG = temp[,1], Gene = temp$GeneHancer_Associated_Gene,
+                           GeneHancer_Element_Name = temp$GeneHancer_Name, temp = temp$temp)
+          colnames(mgh)[1] <- colnames(temp)[1]
         }
       } else if (gname & !ghname) {
         temp$temp <- paste0(temp[,1], temp$GeneHancer_Associated_Gene)
         temp <- temp[!duplicated(temp$temp),]
         if (etype) {
-          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'GeneHancer_Feature_Type', 'temp')]
-          colnames(mgh)[2:3] <- c('Gene','Element')
+          mgh <- data.frame(CpG = temp[,1], Gene = temp$GeneHancer_Associated_Gene, Element = temp$GeneHancer_Feature_Type, temp = temp$temp)
+          colnames(mgh)[1] <- colnames(temp)[1]
         } else {
-          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Associated_Gene', 'temp')]
-          colnames(mgh)[2] <- 'Gene'
+          mgh <- data.frame(CpG = temp[,1], Gene = temp$GeneHancer_Associated_Gene, temp = temp$temp)
+          colnames(mgh)[1] <- colnames(temp)[1]
         }
       } else if (ghname & !gname) {
         temp$temp <- paste0(temp[,1], temp$GeneHancer_Name)
         temp <- temp[!duplicated(temp$temp),]
         if (etype) {
-          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Name', 'GeneHancer_Feature_Type', 'temp')]
-          colnames(mgh)[2:3] <- c('GeneHancer_Element_Name','Element')
+          mgh <- data.frame(CpG = temp[,1], Element = temp$GeneHancer_Feature_Type,
+                           GeneHancer_Element_Name = temp$GeneHancer_Name, temp = temp$temp)
+          colnames(mgh)[1] <- colnames(temp)[1]
         } else {
-          mgh <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GeneHancer_Name', 'temp')]
-          colnames(mgh)[2] <- 'GeneHancer_Element_Name'
+          mgh <- data.frame(CpG = temp[,1], GeneHancer_Element_Name = temp$GeneHancer_Name, temp = temp$temp)
+          colnames(mgh)[1] <- colnames(temp)[1]
         }
       }
       mgh <- left_join(mgh, temp[,-1], by='temp')
