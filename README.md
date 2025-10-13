@@ -8,16 +8,43 @@ source_url('https://raw.githubusercontent.com/bethan-mallabar-rimmer/EPICv2_mani
 ```
 
 ### Using the function - contents of this page:
-- Expanding the annotation
-  - Get one row per CpG/GENCODEv47 gene annotation
-  - Get one row per CpG/GENCODEv47 transcript annotation
-  - Get one row per CpG/distance-based promoter and enhancer annotation
-- Pathway analysis - get a list of annotated genes etc
-  - Sub Item 1
-  - Sub Item 2
+- Example usage for pathway analysis
+- Getting the GENCODEv47 gene and transcript annotations
+  - Filtering the annotation to CpGs in the gene body or <1500bp or <200bp upstream of the TSS
+- Getting the distance-based promoter and enhancer annotations
+  - Filtering the annotation to promoters or enhancers only
+- Getting the GeneHancer promoter and enhancer annotations
+  - Filtering the annotation to promoters or enhancers only
+- Outputting a list or table of filtered genes
 
+## Example use: get a list of genes for pathway analysis
 
-## Expanding the annotation
+### Get all CpG sites annotated to a gene body (according to GENCODEv47 database)
+```
+gene_body_cpgs <- expand_annotation(manifest,by='gene') %>% filter_to_genebody()
+```
+
+### Get list of all genes with a significant CpG site located in the gene body (according to GENCODEv47 database)
+```
+my_significant_cpgs <- c('cg25383568_TC11','cg25595446_BC11','cg25908985_BC11','cg25459778_BC11') #...etc. 
+gene_body_sig_cpgs <- expand_annotation(manifest,by='gene') %>% filter_to_genebody(sig_cpgs = my_significant_cpgs)
+get_annotated_gene_list(gene_body_sig_cpgs)
+#Output: a vector c("ACTN4","ENSG00000298338","PRMT1","IHH")
+
+```
+### Count the number of significant CpGs per gene
+```
+get_annotated_gene_table(gene_body_sig_cpgs)
+#Output: a table ACTN4 ENSG00000298338             IHH           PRMT1 
+                   1         1                      1               1 
+```
+
+### Count the number of all CpGs (significant or not) per gene
+```
+get_annotated_gene_table(gene_body_cpgs)
+```
+
+## Getting the GENCODEv47 gene and transcript annotations
 ### Get one row per CpG/GENCODEv47 gene annotation:
 ```
 gene_annotations <- expand_annotation(manifest, by='gene')
@@ -45,6 +72,8 @@ head(transcript_annotations[,1:4]
 #5 cg25383568_TC11       ACTN4-202 cg25383568    79792482
 #6 cg25383568_TC11       ACTN4-203 cg25383568    79792482
 ```
+
+## Getting the distance-based promoter and enhancer annotations
 ### get one row per CpG/distance-based promoter and enhancer annotation:
 Promoter = region 1500bp upstream to 500bp downstream of a gene's transcription start site.
 Enhancer = region 5000bp upstream of gene's transcription start site, including intergenic regions only (so excluding any region that overlapped the gene body of another gene).
@@ -62,54 +91,3 @@ head(regulatory_annotations[,1:5]
 #6 cg25595446_BC11                 cg25595446    65640459
 ```
 
-## Pathway analysis
-E.g. if you have a list of significant sites and want to a list of which genes or transcripts they are annotated to:
-```
-my_significant_cpgs <- c('cg25383568_TC11','cg25595446_BC11','cg25908985_BC11','cg25459778_BC11') #...etc.
-```
-### Get a list of genes with significant CpGs in the gene body:
-```
-gene_annotations <- expand_annotation(manifest, by='gene')
-sig_genebody_annotations <- gene_annotations[gene_annotations[,1] %in% my_significant_cpgs,]
-sig_genebody_annotations <- sig_genebody_annotations[grepl('intron|exon|UTR',sig_genebody_annotations$GENCODEv47_Feature_Type),]
-
-#Get gene list:
-unique(sig_gene_annotations$Gene)
-#output: "ACTN4" "ENSG00000298338" "CRAMP1" "PRMT1" "IHH" 
-
-#Get number of significant CpGs per gene:
-table(sig_gene_annotations$Gene)
-#output: ACTN4 ENSG00000298338    CRAMP1       PRMT1      IHH
-#          1          1              1           1         1
-```
-### Get a list of genes with significant CpGs <1500bp upstream of the TSS:
-
-### Get a list of genes with significant CpGs <200bp upstream of the TSS:
-
-### Get a list of transcripts with significant CpGs in them:
-```
-sig_transcript_annotations <- transcript_annotations[transcript_annotations[,1] %in% my_significant_cpgs,]
-
-#Get transcript list:
-unique(sig_transcript_annotations$Transcript)
-#output: [1] "ACTN4-201"       "ACTN4-202"       "ACTN4-203"       "ACTN4-204"       "ACTN4-211"      
-#[6] "ENST00000754980" "ENST00000754981" "ENST00000754982" "CRAMP1-201"      "CRAMP1-202"     
-#[11] "PRMT1-201"       "PRMT1-202"       "PRMT1-217"       "PRMT1-221"       "IHH-201" 
-
-#Get number of significant CpGs per transcript:
-table(sig_transcript_annotations$Transcript)
-#you get the idea
-```
-### Get a list of genes with significant CpGs in their promoter or enhancer (with promoter/enhancer defined according to distance from TSS):
-```
-sig_regulatory_annotations <- regulatory_annotations[regulatory_annotations[,1] %in% my_significant_cpgs,]
-
-#Get gene list:
-unique(sig_regulatory_annotations$Gene)
-#output: ""    "CRAMP1"
-
-#Get number of significant CpGs located in a promoter and/or enhancer of each gene:
-table(sig_regulatory_annotations$Gene)
-#       CRAMP1       - blank space shows 3 out of the 4 CpGs in my_significant_cpgs were not in the promoter or enhancer of any gene
-     3      1 
-```
