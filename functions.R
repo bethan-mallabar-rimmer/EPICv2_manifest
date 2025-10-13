@@ -182,7 +182,7 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   
 }
 
-filter_to_genebody <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_genebody <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
     stop('Column named GENCODEv47_Feature_Type missing from input file.')
   }
@@ -198,7 +198,7 @@ filter_to_genebody <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_TSS1500 <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_TSS1500 <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
     stop('Column named GENCODEv47_Feature_Type missing from input file.')
   }
@@ -214,7 +214,7 @@ filter_to_TSS1500 <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_TSS200 <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_TSS200 <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
     stop('Column named GENCODEv47_Feature_Type missing from input file.')
   }
@@ -230,7 +230,7 @@ filter_to_TSS200 <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_promoter <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
     stop('Column named DB_Element_Type missing from input file.')
   }
@@ -246,7 +246,7 @@ filter_to_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_enhancer <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
     stop('Column named DB_Element_Type missing from input file.')
   }
@@ -262,7 +262,7 @@ filter_to_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_gh_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_gh_promoter <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('GeneHancer_Feature_Type' %in% colnames(expanded_annotation))) {
     stop('Column named GeneHancer_Feature_Type missing from input file.')
   }
@@ -278,7 +278,7 @@ filter_to_gh_promoter <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_gh_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
+filter_to_gh_enhancer <- function(expanded_annotation, sig_cpgs = NULL) {
   if (!('GeneHancer_Feature_Type' %in% colnames(expanded_annotation))) {
     stop('Column named GeneHancer_Feature_Type missing from input file.')
   }
@@ -294,7 +294,7 @@ filter_to_gh_enhancer <- function (expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-get_annotated_gene_list < function (expanded_annotation, na.rm=FALSE) {
+get_annotated_gene_list <- function(expanded_annotation, na.rm=FALSE) {
   if (na.rm) {
     return(unique(expanded_annotation$Gene[!is.na(expanded_annotation$Gene) & expanded_annotation$Gene != ""]))
   } else {
@@ -302,7 +302,7 @@ get_annotated_gene_list < function (expanded_annotation, na.rm=FALSE) {
   }
 }
 
-get_annotated_gene_table < function (expanded_annotation, na.rm=FALSE) {
+get_annotated_gene_table <- function(expanded_annotation, na.rm=FALSE) {
   if (na.rm) {
     return(table(expanded_annotation$Gene[!is.na(expanded_annotation$Gene) & expanded_annotation$Gene != ""]))
   } else {
@@ -310,7 +310,7 @@ get_annotated_gene_table < function (expanded_annotation, na.rm=FALSE) {
   }
 }
 
-get_annotated_transcript_list < function (expanded_annotation, na.rm=FALSE) {
+get_annotated_transcript_list <- function(expanded_annotation, na.rm=FALSE) {
   if (na.rm) {
     return(unique(expanded_annotation$Transcript[!is.na(expanded_annotation$Transcript) & expanded_annotation$Transcript != ""]))
   } else {
@@ -318,7 +318,7 @@ get_annotated_transcript_list < function (expanded_annotation, na.rm=FALSE) {
   }
 }
 
-get_annotated_transcript_table < function (expanded_annotation, na.rm=FALSE) {
+get_annotated_transcript_table <- function(expanded_annotation, na.rm=FALSE) {
   if (na.rm) {
     return(table(expanded_annotation$Transcript[!is.na(expanded_annotation$Transcript) & expanded_annotation$Transcript != ""]))
   } else {
