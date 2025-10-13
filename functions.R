@@ -132,18 +132,23 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
     gname <- 'GeneHancer_Associated_Gene' %in% gh_cols
     ghname <- 'GeneHancer_Name' %in% gh_cols
     etype  <- 'GeneHancer_Feature_Type' %in% gh_cols
-
+    print('debug 1')
+    
     if(!ig & !gname) {
       stop('Columns In_GeneHancer and GeneHancer_Associated_Gene not found in input file.')
     }
       
     if(ig & !gname & !ghname & !etype) {
+      print('debug 2')
       colorder <- c(1,which(colnames(manifest)=='In_GeneHancer'),(2:ncol(manifest))[-(which(colnames(manifest)=='In_GeneHancer')-1)])
       return(manifest[,..colorder])
     } else {
+      print('debug 3')
       temp <- tidyr::separate_longer_delim(manifest,
                                        cols=all_of(gh_cols2),
                                        delim=';')
+      print('debug 4')
+      
       if (gname & ghname) {
         temp$temp <- paste0(temp[,1], temp$GeneHancer_Associated_Gene, temp$GeneHancer_Name)
         temp <- temp[!duplicated(temp$temp),]
