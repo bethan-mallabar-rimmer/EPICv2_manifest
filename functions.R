@@ -127,7 +127,6 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   }
   if (by=='gh') {
     gh_cols <- colnames(manifest)[grepl('GeneHancer',colnames(manifest))]
-    gh_cols2 <- colnames(manifest)[colnames(manifest) %in% c('GeneHancer_Associated_Gene','GeneHancer_Association_Methods')]
     ig <- 'In_GeneHancer' %in% gh_cols
     gname <- 'GeneHancer_Associated_Gene' %in% gh_cols
     ghname <- 'GeneHancer_Name' %in% gh_cols
@@ -145,7 +144,7 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
     } else {
       print('debug 3')
       temp <- tidyr::separate_longer_delim(manifest,
-                                       cols=all_of(gh_cols2),
+                                       cols='GeneHancer_Associated_Gene',
                                        delim=';')
       print('debug 4')
       
