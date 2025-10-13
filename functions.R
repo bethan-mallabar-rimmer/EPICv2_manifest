@@ -127,7 +127,7 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   }
   if (by=='gh') {
     gh_cols <- colnames(manifest)[grepl('GeneHancer',colnames(manifest))]
-    gh_cols2 <- colnames(manifest)[grepl('GeneHancer_',colnames(manifest))]
+    gh_cols2 <- colnames(manifest)[colnames(manifest) %in% c('GeneHancer_Associated_Gene','GeneHancer_Association_Methods')]
     ig <- 'In_GeneHancer' %in% gh_cols
     gname <- 'GeneHancer_Associated_Gene' %in% gh_cols
     ghname <- 'GeneHancer_Name' %in% gh_cols
