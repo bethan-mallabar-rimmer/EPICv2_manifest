@@ -9,7 +9,7 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
     }
     if (by=='transcript') {
       print('Returning CpGs with annotated transcripts from GENCODEv47 (if using reannotated manifest version 2.0 or older) or GENCODEv49 (version 3.0+).')
-      print('Important! This function assumes your CpG IDs/IlmnIDs are in the first column of input file, and the input file contains at least one of the following columns: GENCODEv47_Gene_ID, GENCODEv47_Gene_Name, GENCODEv49_Gene_ID, GENCODEv49_Gene_Name')
+      print('Important! This function assumes your CpG IDs/IlmnIDs are in the first column of input file, and the input file contains at least one of the following columns: GENCODEv47_Transcript_ID, GENCODEv47_Transcript_Name, GENCODEv49_Transcript_ID, GENCODEv49_Transcript_Name')
     }
     if (by=='gh') {
       print('Returning CpGs annotated to regulatory elements (according to GeneHancer database).')
@@ -20,107 +20,96 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   }
 
   if (by=='gene') {
-    g47_cols <- colnames(manifest)[grepl('GENCODEv47|GENCODEv49',colnames(manifest))]
-    gname <- ('GENCODEv47_Gene_Name' %in% g47_cols) | ('GENCODEv49_Gene_Name' %in% g47_cols)
-    gid  <- ('GENCODEv47_Gene_ID' %in% g47_cols) | ('GENCODEv49_Gene_ID' %in% g47_cols)
+    g_cols <- colnames(manifest)[grepl('GENCODEv47|GENCODEv49',colnames(manifest))]
+    g47name <- 'GENCODEv47_Gene_Name' %in% g_cols
+    g47id  <- 'GENCODEv47_Gene_ID' %in% g_cols
+    g49name <- 'GENCODEv49_Gene_Name' %in% g_cols
+    g49id  <- 'GENCODEv49_Gene_ID' %in% g_cols
+    gname <- g47name | g49name
+    gid <- g47id | g49id
 
   
     if (!gname & !gid) {
-      stop('Columns GENCODEv47_Gene_Name and GENCODEv47_Gene_ID not found in input file.')
+      stop('At least one of the columns GENCODEv47_Gene_Name / GENCODEv47_Gene_ID / GENCODEv49_Gene_Name / GENCODEv49_Gene_ID is required in input file.')
+    }
+
+    if (grepl('v47', g_cols) & grepl('v49', g_cols)) {
+      stop("This error means you have both the GENCODEv47 and GENCODEv49 annotations in your input file. Did you join the older and newer versions of the reannotated EPICv2 manifest together for some reason? I'm not judging, just confused.")
     }
   
     temp <- tidyr::separate_longer_delim(manifest,
-                                       cols=all_of(g47_cols),
+                                       cols=all_of(g_cols),
                                        delim=';')
   
-    if (gid) {
+    if (g47id) {
       temp$temp <- paste0(temp[,1], temp$GENCODEv47_Gene_ID)
-    } else {
+      gcol <- 'GENCODEv47_Gene_ID'
+    } else if (g47name) {
       temp$temp <- paste0(temp[,1], temp$GENCODEv47_Gene_Name)
+      gcol <- 'GENCODEv47_Gene_Name'
+    } else if (g49id) {
+      temp$temp <- paste0(temp[,1], temp$GENCODEv49_Gene_ID)
+      gcol <- 'GENCODEv49_Gene_ID'
+    } else if (g49name) {
+      temp$temp <- paste0(temp[,1], temp$GENCODEv49_Gene_Name)
+      gcol <- 'GENCODEv49_Gene_Name'
     }
   
     temp <- temp[!duplicated(temp$temp),]
   
-    if (gname) {
-      mgenes <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GENCODEv47_Gene_Name', 'temp')]
-    } else {
-      mgenes <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GENCODEv47_Gene_ID', 'temp')]
-    }
+    mgenes <- temp[,colnames(temp) %in% c(colnames(temp)[1], gcol, 'temp')]
     colnames(mgenes)[2] <- 'Gene'
+    
     mgenes <- left_join(mgenes, temp[,-1], by='temp')
     mgenes <- mgenes[,which(colnames(mgenes) != 'temp')]
     return(mgenes)
   }
   if (by=='transcript') {
-    g47_cols <- colnames(manifest)[grepl('GENCODEv47',colnames(manifest))]
-    tname <- 'GENCODEv47_Transcript_Name' %in% g47_cols
-    tid  <- 'GENCODEv47_Transcript_ID' %in% g47_cols
+    g_cols <- colnames(manifest)[grepl('GENCODEv47|GENCODEv49',colnames(manifest))]
+    g47name <- 'GENCODEv47_Transcript_Name' %in% g_cols
+    g47id  <- 'GENCODEv47_Transcript_ID' %in% g_cols
+    g49name <- 'GENCODEv49_Transcript_Name' %in% g_cols
+    g49id  <- 'GENCODEv49_Transcript_ID' %in% g_cols
+    gname <- g47name | g49name
+    gid <- g47id | g49id
 
   
-    if (!tname & !tid) {
-      stop('Columns GENCODEv47_Transcript_Name and GENCODEv47_Transcript_ID not found in input file.')
+    if (!gname & !gid) {
+      stop('At least one of the columns GENCODEv47_Transcript_Name / GENCODEv47_Transcript_ID / GENCODEv49_Transcript_Name / GENCODEv49_Transcript_ID is required in input file.')
+    }
+
+    if (grepl('v47', g_cols) & grepl('v49', g_cols)) {
+      stop("This error means you have both the GENCODEv47 and GENCODEv49 annotations in your input file. Did you join the older and newer versions of the reannotated EPICv2 manifest together for some reason? (Not judging, just confused.)")
     }
   
     temp <- tidyr::separate_longer_delim(manifest,
-                                       cols=all_of(g47_cols),
+                                       cols=all_of(g_cols),
                                        delim=';')
   
-    if (tid) {
+    if (g47id) {
       temp$temp <- paste0(temp[,1], temp$GENCODEv47_Transcript_ID)
-    } else {
+      gcol <- 'GENCODEv47_Transcript_ID'
+    } else if (g47name) {
       temp$temp <- paste0(temp[,1], temp$GENCODEv47_Transcript_Name)
+      gcol <- 'GENCODEv47_Transcript_Name'
+    } else if (g49id) {
+      temp$temp <- paste0(temp[,1], temp$GENCODEv49_Transcript_ID)
+      gcol <- 'GENCODEv49_Transcript_ID'
+    } else if (g49name) {
+      temp$temp <- paste0(temp[,1], temp$GENCODEv49_Transcript_Name)
+      gcol <- 'GENCODEv49_Transcript_Name'
     }
   
     temp <- temp[!duplicated(temp$temp),]
   
-    if (tname) {
-      mtrans <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GENCODEv47_Transcript_Name', 'temp')]
-    } else {
-      mtrans <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'GENCODEv47_Transcript_ID', 'temp')]
-    }
+    mtrans <- temp[,colnames(temp) %in% c(colnames(temp)[1], gcol, 'temp')]
     colnames(mtrans)[2] <- 'Transcript'
+    
     mtrans <- left_join(mtrans, temp[,-1], by='temp')
     mtrans <- mtrans[,which(colnames(mtrans) != 'temp')]
     return(mtrans)
   }
-  if (by=='db') {
-    db_cols <- colnames(manifest)[grepl('DB_Element',colnames(manifest))]
-    gname <- 'DB_Element_Gene_Name' %in% db_cols
-    gid  <- 'DB_Element_Gene_ID' %in% db_cols
-    etype  <- 'DB_Element_Type' %in% db_cols
-
   
-    if (!gname & !gid) {
-      stop('Columns DB_Element_Gene_Name and DB_Element_Gene_ID not found in input file.')
-    }
-  
-    temp <- tidyr::separate_longer_delim(manifest,
-                                       cols=all_of(db_cols),
-                                       delim=';')
-  
-    if (gid) {
-      temp$temp <- paste0(temp[,1], temp$DB_Element_Gene_ID)
-    } else {
-      temp$temp <- paste0(temp[,1], temp$DB_Element_Gene_Name)
-    }
-  
-    temp <- temp[!duplicated(temp$temp),]
-  
-    if (gname) {
-      mgenes <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'DB_Element_Gene_Name', 'temp')]
-    } else {
-      mgenes <- temp[,colnames(temp) %in% c(colnames(temp)[1], 'DB_Element_Gene_ID', 'temp')]
-    }
-    if (etype) {
-      mgenes$Element <- rep('',nrow(mgenes))
-      mgenes$Element[grepl('Promoter',temp$DB_Element_Type,ignore.case = TRUE)] <- 'Promoter'
-      mgenes$Element[grepl('Enhancer',temp$DB_Element_Type,ignore.case = TRUE)] <- 'Enhancer'
-    }
-    colnames(mgenes)[2] <- 'Gene'
-    mgenes <- left_join(mgenes, temp[,-1], by='temp')
-    mgenes <- mgenes[,which(colnames(mgenes) != 'temp')]
-    return(mgenes)
-  }
   if (by=='gh') {
     gh_cols <- colnames(manifest)[grepl('GeneHancer',colnames(manifest))]
     ig <- 'In_GeneHancer' %in% gh_cols
