@@ -20,9 +20,9 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
   }
 
   if (by=='gene') {
-    g47_cols <- colnames(manifest)[grepl('GENCODEv47',colnames(manifest))]
-    gname <- 'GENCODEv47_Gene_Name' %in% g47_cols
-    gid  <- 'GENCODEv47_Gene_ID' %in% g47_cols
+    g47_cols <- colnames(manifest)[grepl('GENCODEv47|GENCODEv49',colnames(manifest))]
+    gname <- ('GENCODEv47_Gene_Name' %in% g47_cols) | ('GENCODEv49_Gene_Name' %in% g47_cols)
+    gid  <- ('GENCODEv47_Gene_ID' %in% g47_cols) | ('GENCODEv49_Gene_ID' %in% g47_cols)
 
   
     if (!gname & !gid) {
