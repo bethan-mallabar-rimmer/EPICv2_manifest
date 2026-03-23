@@ -176,10 +176,10 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
 }
 
 filter_to_genebody <- function(expanded_annotation, sig_cpgs = NULL) {
-  if (sum(grepl('GENCODEv.._Feature_Type',colnames(expanded_annotation)))) {
+  if (sum(grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))) == 0) {
     stop('Column named GENCODEv47_Feature_Type or GENCODEv49_Feature_Type missing from input file.')
   }
-  gcol <- colnames(expanded_annotation)[grepl('GENCODEv.._Feature_Type',colnames(expanded_annotation))]
+  gcol <- colnames(expanded_annotation)[grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))]
   if (sum(grepl(';', expanded_annotation[,gcol])) > 0) {
     stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
   }
