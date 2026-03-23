@@ -223,49 +223,18 @@ To find all sites <1500bp upstream of the TSS, including TSS200 and TSS1500, set
 }
 
 filter_to_TSS200 <- function(expanded_annotation, sig_cpgs = NULL) {
-  if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
-    stop('Column named GENCODEv47_Feature_Type missing from input file.')
+  if (sum(grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))) == 0) {
+    stop('Column named GENCODEv47_Feature_Type or GENCODEv49_Feature_Type missing from input file.')
   }
-  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+  gcol <- colnames(expanded_annotation)[grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))]
+   if (sum(grepl(';', expanded_annotation[,gcol])) > 0) {
     stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
   }
   if (!is.null(sig_cpgs)) {
     temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
-    temp <- temp[grepl('TSS200',temp$GENCODEv47_Feature_Type),]
+    temp <- temp[grepl('TSS200',temp[,gcol]),]
   } else {
-    temp <- expanded_annotation[grepl('TSS200',expanded_annotation$GENCODEv47_Feature_Type),]
-  }
-  return(temp)
-}
-
-filter_to_promoter <- function(expanded_annotation, sig_cpgs = NULL) {
-  if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
-    stop('Column named DB_Element_Type missing from input file.')
-  }
-  if (sum(grepl(';', expanded_annotation$DB_Element_Type)) > 0) {
-    stop("Did you apply the function expand_annotation() with by='db' to your input file before running this function?")
-  }
-  if (!is.null(sig_cpgs)) {
-    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
-    temp <- temp[grepl('Promoter',temp$DB_Element_Type,ignore.case=TRUE),]
-  } else {
-    temp <- expanded_annotation[grepl('Promoter',expanded_annotation$DB_Element_Type,ignore.case=TRUE),]
-  }
-  return(temp)
-}
-
-filter_to_enhancer <- function(expanded_annotation, sig_cpgs = NULL) {
-  if (!('DB_Element_Type' %in% colnames(expanded_annotation))) {
-    stop('Column named DB_Element_Type missing from input file.')
-  }
-  if (sum(grepl(';', expanded_annotation$DB_Element_Type)) > 0) {
-    stop("Did you apply the function expand_annotation() with by='db' to your input file before running this function?")
-  }
-  if (!is.null(sig_cpgs)) {
-    temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
-    temp <- temp[grepl('Enhancer',temp$DB_Element_Type,ignore.case=TRUE),]
-  } else {
-    temp <- expanded_annotation[grepl('Enhancer',expanded_annotation$DB_Element_Type,ignore.case=TRUE),]
+    temp <- expanded_annotation[grepl('TSS200',expanded_annotation[,gcol]),]
   }
   return(temp)
 }
