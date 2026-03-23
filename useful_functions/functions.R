@@ -178,15 +178,16 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
 filter_to_genebody <- function(expanded_annotation, sig_cpgs = NULL) {
   if (sum(grepl('GENCODEv.._Feature_Type',colnames(expanded_annotation)))) {
     stop('Column named GENCODEv47_Feature_Type or GENCODEv49_Feature_Type missing from input file.')
-  } #<----
-  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+  }
+  gcol <- colnames(expanded_annotation)[grepl('GENCODEv.._Feature_Type',colnames(expanded_annotation))]
+  if (sum(grepl(';', expanded_annotation[,gcol])) > 0) {
     stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
   }
   if (!is.null(sig_cpgs)) {
     temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
-    temp <- temp[grepl('intron|exon|UTR',temp$GENCODEv47_Feature_Type),]
+    temp <- temp[grepl('intron|exon|UTR',temp[,gcol]),]
   } else {
-    temp <- expanded_annotation[grepl('intron|exon|UTR',expanded_annotation$GENCODEv47_Feature_Type),]
+    temp <- expanded_annotation[grepl('intron|exon|UTR',expanded_annotation[,gcol]),]
   }
   return(temp)
 }
