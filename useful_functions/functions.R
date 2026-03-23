@@ -192,18 +192,32 @@ filter_to_genebody <- function(expanded_annotation, sig_cpgs = NULL) {
   return(temp)
 }
 
-filter_to_TSS1500 <- function(expanded_annotation, sig_cpgs = NULL) {
-  if (!('GENCODEv47_Feature_Type' %in% colnames(expanded_annotation))) {
-    stop('Column named GENCODEv47_Feature_Type missing from input file.')
+filter_to_TSS1500 <- function(expanded_annotation, sig_cpgs = NULL, all_TSS1500 = TRUE) {
+  if (sum(grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))) == 0) {
+    stop('Column named GENCODEv47_Feature_Type or GENCODEv49_Feature_Type missing from input file.')
   }
-  if (sum(grepl(';', expanded_annotation$GENCODEv47_Feature_Type)) > 0) {
+  gcol <- colnames(expanded_annotation)[grepl('GENCODEv.._Feature_Type$',colnames(expanded_annotation))]
+  if (sum(grepl(';', expanded_annotation[,gcol])) > 0) {
     stop("Did you apply the function expand_annotation() with by='gene' to your input file before running this function?")
   }
   if (!is.null(sig_cpgs)) {
     temp <- expanded_annotation[expanded_annotation[,1] %in% sig_cpgs,]
-    temp <- temp[grepl('TSS1500',temp$GENCODEv47_Feature_Type),]
+    if (all_TSS1500) {
+      temp <- temp[grepl('TSS',temp[,gcol]),]
+      print('Finding all sites <1500bp upstream of the TSS. This includes sites annotated with TSS1500 and TSS200.\n
+To change this setting and find only sites annotated TSS1500 i.e. 201-1500bp upstream, set all_TSS1500 = FALSE')
+    } else {
+      temp <- temp[grepl('TSS1500',temp[,gcol]),]
+      print('Finding sites 201-1500bp upstream of the TSS, i.e. only sites annotated TSS1500.\n
+To find all sites <1500bp upstream of the TSS, including TSS200 and TSS1500, set all_TSS1500 = TRUE')
+    }
   } else {
-    temp <- expanded_annotation[grepl('TSS1500',expanded_annotation$GENCODEv47_Feature_Type),]
+    if (all_TSS1500) {
+      temp <- expanded_annotation[grepl('TSS',expanded_annotation[,gcol]),]
+    } else {
+      temp <- expanded_annotation[grepl('TSS1500',expanded_annotation[,gcol]),]
+    }
+    
   }
   return(temp)
 }
