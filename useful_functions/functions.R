@@ -33,7 +33,7 @@ expand_annotation <- function(manifest, by='gene', verbose=TRUE) {
       stop('At least one of the columns GENCODEv47_Gene_Name / GENCODEv47_Gene_ID / GENCODEv49_Gene_Name / GENCODEv49_Gene_ID is required in input file.')
     }
 
-    if (grepl('v47', g_cols) & grepl('v49', g_cols)) {
+    if (sum(grepl('v47', g_cols) > 0) & sum(grepl('v49', g_cols) > 0)) {
       stop("This error means you have both the GENCODEv47 and GENCODEv49 annotations in your input file. Did you join the older and newer versions of the reannotated EPICv2 manifest together for some reason? I'm not judging, just confused.")
     }
   
