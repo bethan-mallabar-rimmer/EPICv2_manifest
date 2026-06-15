@@ -1277,7 +1277,7 @@ controls[,c("GENCODEv49_Gene_Name","GENCODEv49_Gene_ID",
                   "GENCODEv49_Gene_End","GENCODEv49_Gene_Strand",
                   "GENCODEv49_Transcript_Start","GENCODEv49_Transcript_End",
                   "GENCODEv49_Feature_Start","GENCODEv49_Feature_End",
-                  "In_GeneHancer","Horvath_Clock_Site","MethylDetectR_Clock_Site",
+                  "In_GeneHancer","Horvath_Multiple_Clock_Site","MethylDetectR_Clock_Site",
                   "GeneHancer_Start","GeneHancer_End","GeneHancer_Name","GeneHancer_Feature_Type",
                   "GeneHancer_Associated_Gene","GeneHancer_Association_Methods")] <- NA
 controls <- controls[,colnames(controls) != 'CM']
@@ -1307,7 +1307,7 @@ h <- read.csv(paste0(workdir,'/clocks/datMiniAnnotation4_fixed.csv')) #Horvath c
 mdr <- read.csv(paste0(workdir,'/clocks/Truncate_to_these_CpGs.csv')) #MethylDetectR clock sites downloaded from https://zenodo.org/records/7154750 
 
 #add to manifest based on EPICv1_Loci column
-m6$Horvath_Clock_Site <- ifelse(m6$EPICv1_Loci %in% h$Name, TRUE, FALSE)
+m6$Horvath_Multiple_Clock_Site <- ifelse(m6$EPICv1_Loci %in% h$Name, TRUE, FALSE)
 m6$MethylDetectR_Clock_Site <- ifelse(m6$EPICv1_Loci %in% mdr$CpGs, TRUE, FALSE)
 
 save(m6,file=paste0(workdir,'/4_GENCODE_GH_clocks_public_manifest.RData'))
