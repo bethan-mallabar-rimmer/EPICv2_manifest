@@ -27,7 +27,19 @@ Our original reannotation used GENCODE version 47 data. I had assumed the "DB" c
 
 Run in R programming language, version 4.3.2.
 
-The code has been divided into sections using comments.
+Loaded packages:
+- data.table_1.15.0
+- dplyr_1.1.4
+- rtracklayer_1.62.0
+- GenomicRanges_1.54.1
+- GenomeInfoDb_1.38.6
+- IRanges_2.36.0
+- S4Vectors_0.40.2
+- BiocGenerics_0.48.1
+
+See session info below for futher details.
+
+### The code has been divided into sections using comments.
 
 ### Sections 1-10 - add GENCODEv49 annotation
 **Input:** GENCODEv49 basic gene set from https://www.gencodegenes.org/human/release_49.html and Illumina EPICv2 manifest downloaded from https://support.illumina.com.cn/downloads/infinium-methylationepic-v2-0-product-files.html
@@ -59,3 +71,44 @@ The code has been divided into sections using comments.
 - Export
 
 **Output:** our reannotated EPICv2 manifest version 3 available from https://doi.org/10.5281/zenodo.14933468
+
+### Session Info
+```
+sessionInfo()
+R version 4.3.2 (2023-10-31)
+Platform: x86_64-pc-linux-gnu (64-bit)
+Running under: Red Hat Enterprise Linux 8.10 (Ootpa)
+
+attached base packages:
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+[1] data.table_1.15.0    dplyr_1.1.4          rtracklayer_1.62.0  
+[4] GenomicRanges_1.54.1 GenomeInfoDb_1.38.6  IRanges_2.36.0      
+[7] S4Vectors_0.40.2     BiocGenerics_0.48.1 
+
+loaded via a namespace (and not attached):
+ [1] Matrix_1.6-5                compiler_4.3.2             
+ [3] rjson_0.2.21                crayon_1.5.2               
+ [5] tidyselect_1.2.0            SummarizedExperiment_1.32.0
+ [7] Biobase_2.62.0              Rsamtools_2.18.0           
+ [9] bitops_1.0-7                Biostrings_2.70.2          
+[11] GenomicAlignments_1.38.2    parallel_4.3.2             
+[13] BiocParallel_1.36.0         yaml_2.3.8                 
+[15] lattice_0.22-5              R6_2.5.1                   
+[17] XVector_0.42.0              S4Arrays_1.2.0             
+[19] generics_0.1.3              XML_3.99-0.16.1            
+[21] tibble_3.2.1                DelayedArray_0.28.0        
+[23] MatrixGenerics_1.14.0       GenomeInfoDbData_1.2.11    
+[25] pillar_1.9.0                rlang_1.1.3                
+[27] utf8_1.2.4                  SparseArray_1.2.4          
+[29] cli_3.6.2                   magrittr_2.0.3             
+[31] zlibbioc_1.48.0             grid_4.3.2                 
+[33] lifecycle_1.0.4             vctrs_0.6.5                
+[35] glue_1.7.0                  codetools_0.2-19           
+[37] abind_1.4-5                 RCurl_1.98-1.14            
+[39] fansi_1.0.6                 restfulr_0.0.15            
+[41] pkgconfig_2.0.3             matrixStats_1.2.0          
+[43] tools_4.3.2                 BiocIO_1.12.0  
+```
