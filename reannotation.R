@@ -2,7 +2,7 @@
 ### RELEASE NOTES ###
 #####################
 
-#This is reannotation code for version 3.0 of the EPICv2 reannotated manifest by Mallabar-Rimmer et al., released on [date]
+#This is reannotation code for version 3.0 of the EPICv2 reannotated manifest by Mallabar-Rimmer et al., released on 15th June 2026
 
 ###########################################
 #!#!# Major changes in version 3.0: #!#!#
