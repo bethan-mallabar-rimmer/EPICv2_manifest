@@ -1,5 +1,5 @@
-# Functions to help access annotations from the re-annotated EPICv2 manifest (note this description page needs updating)
-Re-annotated manifest available here: https://zenodo.org/records/15181885
+# Outdated/work in progress - Functions to help access annotations from the re-annotated EPICv2 manifest
+Re-annotated manifest available here: https://doi.org/10.5281/zenodo.14933468
 
 ### load functions:
 ```
